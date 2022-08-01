@@ -1,8 +1,5 @@
-from apachepy import createHttp, Response
-from sessions import CreateSessionManager
+from pypache import createHttp, Response
 
-
-session = CreateSessionManager()
 sv = createHttp('0.0.0.0', 5000)
 rp = Response()
 
@@ -13,7 +10,7 @@ def main(request :dict):
 
 @sv.AddPage("/api/register", method="POST")
 def register(request :dict):
-    
+    request['']
     return '{"status":"ok"}'
 
 @sv.AddPage("/api/login", method="POST")
@@ -27,7 +24,7 @@ def auth(request :dict):
     try:
         token = request["session-token"]
     except KeyError:
-        body = "<h1>Request no valida </h1>"
+        body = "<h1>Request no valida</h1>"
         return rp.header(rp.badrequest, "text/html", body)
     
     # Cheackea que existe el token
@@ -36,6 +33,6 @@ def auth(request :dict):
         return rp.header(rp.forbidden,"text/html", body) 
     else: # Existe
         body = '{"status":"autentificado"}'
-        return rp.header(rp.ok, "application/json", body) 
+        return rp.json(rp.ok, "{'Status': 'ok'}")
 
 sv.start()

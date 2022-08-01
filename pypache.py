@@ -1,7 +1,5 @@
 import socket
 import datetime
-from tkinter import font
-
 
 class createHttp:
     def __init__(self, host, port):
@@ -16,9 +14,9 @@ class createHttp:
     def start(self):
         print("[Console] Server started")
         while True:
-            send = Response.notfound # En caso de no encotrar la pagina
+            send = "HTTP/1.1 404 NOT FOUND\n\n<h1>Pagina no encontrada</h1>" # En caso de no encotrar la pagina
             client_con, client_addr = self.server.accept() # Info del cliente
-            request = client_con.recv(1024).decode()
+            request = client_con.recv(65535).decode()
 
             # Para separar cada key de su value 
             header = request.replace("\r\n", ": ").split(": ")
@@ -64,6 +62,7 @@ class createHttp:
             self.events[page] = [method,args[0]]
         return inner
 
+
 # Clase para ayudar a manejar el header de la respuesta
 class Response:
     ok = "HTTP/1.1 200 OK"
@@ -79,5 +78,23 @@ class Response:
                  "Server: PyPache \n" \
                  "Content-Length: "+ str(len(body)) +"\n" \
                  "Content-type: " + str(contentype) + "\n" \
+                 "\n" + body
+        return header
+    
+    def json(self, response :str, body :str) -> str:
+        header = response + "\n"\
+                 "Date: {}".format(str(datetime.datetime.now())) + "\n"\
+                 "Server: PyPache \n" \
+                 "Content-Length: " + str(len(body)) + "\n"\
+                 "Content-type: application/json" + "\n"\
+                 "\n" + body
+        return header
+
+    def text(self, response :str, body :str) -> str:
+        header = response + "\n"\
+                 "Date: {}".format(str(datetime.datetime.now())) + "\n"\
+                 "Server: PyPache \n" \
+                 "Content-Length: " + str(len(body)) + "\n"\
+                 "Content-type: plain/text" + "\n"\
                  "\n" + body
         return header
